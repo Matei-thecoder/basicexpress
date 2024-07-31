@@ -81,6 +81,39 @@ app.post('/signup',(req,res)=>{
 
 })
 
+app.post('/login',(req,res)=>{
+  const username = req.body.user;
+  const password = req.body.password;
+
+  let finduser;
+  const findUser = async()=>{
+    finduser= await users.findOne({username:username});
+    if(finduser)
+      {
+        console.log(finduser);
+          let verifiedpassword = bcrypt.compareSync(password,finduser.password);
+          if(verifiedpassword)
+          {
+              res.send('ok');
+              console.log('ok');
+          }
+          else
+          {
+            res.send('error2');
+            console.log('wrong password')
+          }
+      }
+    else
+    {
+      res.send('error1');
+      console.log('user doesnt exist')
+    }
+  }
+  findUser();
+  
+  
+})
+
 app.get('/', (req, res) => {
   res.send('Hello, World!');
 });
