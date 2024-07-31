@@ -50,9 +50,16 @@ app.post('/signup',(req,res)=>{
     email:email,
     password:hashedPassword
   }
-  let findUser = users.findOne({username:username});
-  if(findUser)
+  let finduser;
+  const findUser = async()=>{
+    finduser= await users.findOne({username:username});
+  }
+  findUser();
+  console.log(finduser);
+  
+  if(finduser)
   {
+    console.log(finduser);
     res.send('user already exists');
   }
   else
