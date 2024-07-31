@@ -50,18 +50,27 @@ app.post('/signup',(req,res)=>{
     email:email,
     password:hashedPassword
   }
-  const insert = async()=>{
-    try{
-      await users.insertOne(data);
-      console.log('inserted');
-    }
-    catch(e)
-    {
-      console.log(e);
-    }
+  let findUser = users.findOne({username:username});
+  if(findUser)
+  {
+    res.send('user already exists');
   }
-  insert();
-  res.send('ok');
+  else
+  {
+    const insert = async()=>{
+      try{
+        await users.insertOne(data);
+        console.log('inserted');
+      }
+      catch(e)
+      {
+        console.log(e);
+      }
+    }
+    insert();
+    res.send('ok');
+  }
+  
 
 })
 
