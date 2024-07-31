@@ -1,5 +1,9 @@
 
 const express = require('express');
+const cors = require('cors');
+const cookieParser = require('cookie-parser');
+const bcrypt = require('bcrypt');
+
 require('dotenv').config()
 
 const { MongoClient, ServerApiVersion } = require('mongodb');
@@ -13,27 +17,53 @@ const client = new MongoClient(uri, {
   }
 });
 async function run() {
-  try {
+  
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
-  } finally {
-    // Ensures that the client will close when you finish/error
-    await client.close();
-  }
+  
 }
 run().catch(console.dir);
 
 
 // Create an instance of an Express application
 const app = express();
-
+app.use(cors());
+app.use(cookieParser());
+app.use(express.json())
 // Define a port for the server to listen on
 const port = 3000;
+const db = client.db('app');
+const users = db.collection('users');
 
 // Define a basic route for the root URL "/"
+
+app.post('/signup',(req,res)=>{
+  const username = req.body.user;
+  const email = req.body.email;
+  const password = req.body.password;
+  const hashedPassword = bcrypt.hashSync(password,10);
+  const data = {
+    username : username,
+    email:email,
+    password:hashedPassword
+  }
+  const insert = async()=>{
+    try{
+      await users.insertOne(data);
+      console.log('inserted');
+    }
+    catch(e)
+    {
+      console.log(e);
+    }
+  }
+  insert();
+  res.send('ok');
+
+})
 
 app.get('/', (req, res) => {
   res.send('Hello, World!');
