@@ -119,33 +119,29 @@ app.post('/login',(req,res)=>{
   
   
 });
-app.post("/getMessages",(req,res)=>{
-  let allMessages;
-  const getMessages = async()=>{
-    allMessages = await messages.find();
-    if(allMessages)
-    {
-      if(allMessages.length>0)
-      {
-        res.send(allMessages);
-        console.log("messages send");
-      }
-      else
-      {
-        res.send('no messages');
-        console.log("no messages");
-      }
-     
-    }
-    else
-    {
-      res.send('error');
-      console.log('error')
+app.post("/getMessages", async (req, res) => {
+  try {
+    let allMessages = await messages.find().toArray();
+    
+    console.log(allMessages);
+   
+    if (allMessages ) {
+      // Send messages if found
+      console.log("Messages found:", allMessages);
+      res.send(allMessages);
+    } else {
+      // No messages found
+      console.log("No messages");
+      res.send('No messages');
     }
 
+  } catch (error) {
+    // Handle any errors during the database query
+    console.error('Error fetching messages:', error);
+    res.status(500).send('Error fetching messages');
   }
-  getMessages();
-})
+});
+
 
 app.get('/', (req, res) => {
   res.send('Hello, World!');
