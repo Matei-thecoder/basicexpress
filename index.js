@@ -142,6 +142,29 @@ app.post("/getMessages", async (req, res) => {
   }
 });
 
+app.post("/sendMessage",(req,res)=>{
+  const text = req.body.text;
+  const username = req.body.username;
+  const time = req.body.username;
+
+  let data = {
+    text:text,
+    time:time,
+    username:username
+  }
+  const sendMessage = async() =>{
+    try{
+      await messages.insertOne(data);
+      console.log("inserterd");
+      res.send('ok');
+    }
+    catch(e)
+    {
+      throw e;
+    }
+  }
+  sendMessage();
+})
 
 app.get('/', (req, res) => {
   res.send('Hello, World!');
