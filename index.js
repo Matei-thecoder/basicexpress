@@ -94,8 +94,12 @@ app.post('/login',(req,res)=>{
           let verifiedpassword = bcrypt.compareSync(password,finduser.password);
           if(verifiedpassword)
           {
+            let data = {
+              result:"ok",
+              username:username
+            }
             res.cookie("username",username);
-              res.send('ok');
+              res.send(data);
               console.log('ok');
               
           }
