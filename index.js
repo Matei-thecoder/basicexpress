@@ -37,7 +37,7 @@ app.use(express.json())
 const port = 3000;
 const db = client.db('app');
 const users = db.collection('users');
-
+const messages = db.collection('messages');
 // Define a basic route for the root URL "/"
 
 app.post('/signup',(req,res)=>{
@@ -94,8 +94,10 @@ app.post('/login',(req,res)=>{
           let verifiedpassword = bcrypt.compareSync(password,finduser.password);
           if(verifiedpassword)
           {
+            res.cookie("username",username);
               res.send('ok');
               console.log('ok');
+              
           }
           else
           {
@@ -112,6 +114,33 @@ app.post('/login',(req,res)=>{
   findUser();
   
   
+});
+app.post("/getMessages",(req,res)=>{
+  let allMessages;
+  const getMessages = async()=>{
+    allMessages = await messages.find();
+    if(allMessages)
+    {
+      if(allMessages.length>0)
+      {
+        res.send(allMessages);
+        console.log("messages send");
+      }
+      else
+      {
+        res.send('no messages');
+        console.log("no messages");
+      }
+     
+    }
+    else
+    {
+      res.send('error');
+      console.log('error')
+    }
+
+  }
+  getMessages();
 })
 
 app.get('/', (req, res) => {
